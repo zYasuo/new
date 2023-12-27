@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model AuditLog {
+  id          String              @id
+  action      AuditLog_action
+  entityId    String
+  entityType  AuditLog_entityType
+  entityTitle String
+  userId      String?
+  userImage   String?             @db.Text
+  userName    String?             @db.Text
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime
+}
+
+model Board {
+  id            String   @id
+  title         String
+  imageId       String
+  imageThumbUrl String   @db.Text
+  imageFullUrl  String   @db.Text
+  imageUserName String   @db.Text
+  imageLinkHTML String   @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime
+}
+
+model Card {
+  id          String   @id
+  title       String
+  order       Int
+  description String?  @db.Text
+  listId      String
+  userId      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+
+  @@index([listId])
+  @@index([userId])
+}
+
+model Chamados {
+  id         String    @id
+  titulo     String
+  descricao  String
+  status     String
+  tipo       String
+  gravidade  String
+  userId     String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime
+  dateSolved DateTime?
+
+  @@index([userId])
+}
+
+model List {
+  id        String   @id
+  title     String
+  order     Int
+  boardId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+
+  @@index([boardId])
+}
+
+model User {
+  id             String    @id
+  name           String?
+  sobrenome      String?
+  hashedPassword String?
+  email          String?   @unique
+  emailVerified  DateTime?
+  image          String?
+}
+
+enum AuditLog_action {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum AuditLog_entityType {
+  BOARD
+  LIST
+  CARD
+}
