@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { createUser } from "@/actions";
+import { createUser } from "@/actions/create-user";
 import { useAction } from "@/hooks/use-action";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/ui/icons";
-import { PaperPlaneIcon } from "@radix-ui/react-icons";
+
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
+import { FormInput } from "./components/form/form-input";
+import { FormSubmit } from "./components/form/form-submit-button";
+import { Icons } from "@/components/ui/icons";
+import { FaPaperPlane } from "react-icons/fa";
+import { TbFaceIdError } from "react-icons/tb";
 
 export const FormRegister = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { execute } = useAction(createUser, {
+  const { execute, fieldErrors, isLoading } = useAction(createUser, {
     onSuccess(data) {
       toast({
         title: "Successo",
@@ -25,7 +25,6 @@ export const FormRegister = () => {
           </ToastAction>
         ),
       });
-      setIsLoading(false);
     },
     onError(error) {
       toast({
@@ -34,17 +33,15 @@ export const FormRegister = () => {
         variant: "destructive",
         action: (
           <ToastAction altText="ok" className="border-none">
-            <Icons.spinner className="animate-spin mr-2 w-6 h-6" />
+            <TbFaceIdError  />
           </ToastAction>
         ),
       });
-      setIsLoading(false);
     },
   });
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name") as string;
@@ -65,40 +62,52 @@ export const FormRegister = () => {
     <div>
       <form className="flex flex-col space-y-4" onSubmit={onSubmit}>
         <div className="grid space-x-2 grid-cols-2">
-          <Input type="text" placeholder="Nome" name="name" required />
-          <Input
-            type="text"
-            placeholder="Sobrenome"
-            name="sobrenome"
+          <FormInput
+            id="name"
+            placeholder="Primeiro nome"
             required
+            errors={fieldErrors}
+            disabled={isLoading}
+
+          />
+          <FormInput
+            id="sobrenome"
+            placeholder="Seu sobrenome"
+            required
+            errors={fieldErrors}
+            disabled={isLoading}
+
           />
         </div>
-        <Input
-          type="email"
-          placeholder="Email"
-          name="email"
-          autoComplete=""
+        <FormInput
+          id="email"
+          placeholder="seuemail@exemplo.com.br"
           required
+          errors={fieldErrors}
+          disabled={isLoading}
+
         />
-        <Input
+        <FormInput
+          id="password"
           type="password"
-          placeholder="Senha"
-          name="password"
-          autoComplete="new-password"
+          placeholder="Sua senha"
           required
+          errors={fieldErrors}
+          disabled={isLoading}
+
         />
-        <Button type="submit" disabled={isLoading} className="py-6 w-full">
+        <FormSubmit disabled={isLoading} className="py-6 w-full">
           {isLoading ? (
             <Icons.spinner className="animate-spin" />
           ) : (
             <>
               Registrar
               <span className="ml-2">
-                <PaperPlaneIcon />
+                <FaPaperPlane />
               </span>
             </>
           )}
-        </Button>
+        </FormSubmit>
       </form>
     </div>
   );

@@ -1,4 +1,4 @@
-import {  FormRegister } from "./components/form";
+import {  FormRegister } from "./register/form";
 
 export default function DevPage() {
   return (

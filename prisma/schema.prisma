@@ -75,11 +75,11 @@ model List {
 model User {
   id             String    @id
   name           String?
-  sobrenome      String?
   hashedPassword String?
   email          String?   @unique
   emailVerified  DateTime?
   image          String?
+  sobrenome      String?
 }
 
 enum AuditLog_action {
